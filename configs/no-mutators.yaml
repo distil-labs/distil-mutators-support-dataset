@@ -1,0 +1,24 @@
+base:
+  task: chat-completion-agentic
+  student_model_name: Qwen3.5-2B
+  teacher_model_name: zai.glm-5.3-low-thinking
+  random_seed: 123
+  llm_num_parallel_requests: 16
+  enable_thinking: false
+evaluation:
+  num_few_shot_examples: 1
+  llm_as_a_judge_model_name: openai.gpt-oss-120b
+synthgen:
+  generation_target: 2000
+  generation_in_single_call: 1
+  generation_iteration_size: 64
+  num_positive_exemplars_per_generation: 4
+  max_tool_calls_per_turn: 1
+  validation_max_total_length: 20000
+  mutator_update_frequency: 2
+  mutators: []
+tuning:
+  num_train_epochs: 4
+  use_lora: true
+  lora_r: 64
+  learning_rate: 5.0e-05

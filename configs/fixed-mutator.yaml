@@ -1,0 +1,53 @@
+base:
+  task: chat-completion-agentic
+  student_model_name: Qwen3.5-2B
+  teacher_model_name: zai.glm-5.3-low-thinking
+  random_seed: 123
+  llm_num_parallel_requests: 16
+  enable_thinking: false
+evaluation:
+  num_few_shot_examples: 1
+  llm_as_a_judge_model_name: openai.gpt-oss-120b
+synthgen:
+  generation_target: 2000
+  generation_in_single_call: 1
+  generation_iteration_size: 64
+  num_positive_exemplars_per_generation: 4
+  max_tool_calls_per_turn: 1
+  validation_max_total_length: 20000
+  mutator_update_frequency: 2
+  mutators:
+  - name: intent
+    description: what the customer wanted and how the assistant ends up handling it
+    values:
+    - password reset or login problem - the customer cannot sign in (forgot password, invalid credentials,
+      2FA code missing, SSO confusion, locked out); the assistant troubleshoots in content and, when a
+      reset is the answer, confirms the account email and calls send_password_reset
+    - wants to speak to a human - the customer asks for a person or an agent; the assistant makes one
+      genuine attempt to help or asks what it is about, then calls transfer_to_human with reason requested
+      and a one sentence summary
+    - plan and pricing question - the customer asks what plans cost, how seats and proration work, what
+      the yearly discount is, or what an upgrade would cost them; the assistant answers from the plan
+      table with the arithmetic shown, calling get_subscription only when the answer depends on the customer's
+      own account
+    - billing dispute - a refund request, a double charge, a charge the customer does not recognise, or
+      an invoice with a wrong amount, wrong seat count or missing VAT id; the assistant calls get_subscription,
+      identifies the invoice, and calls open_billing_case with the invoice id, the matching case_type
+      and the disputed amount, then gives the case id and the 2 business day review; it never transfers
+      a billing dispute to a human
+    - rude customer - the customer is insulting or aggressive toward the assistant or staff; the assistant
+      stays calm, addresses the real problem if there is one, gives one clear warning, and calls transfer_to_human
+      with reason abusive if the hostility continues
+    method: fixed
+    target_distribution:
+    - 0.25
+    - 0.15
+    - 0.2
+    - 0.35
+    - 0.05
+    beta: 0.9
+tuning:
+  num_train_epochs: 4
+  use_lora: true
+  lora_r: 64
+  learning_rate: 5.0e-05

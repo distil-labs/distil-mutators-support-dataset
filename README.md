@@ -2,10 +2,9 @@
 
 Input data for the distil labs blog post on prompt mutators. A customer support assistant for
 Brightpath, a fictional team task-management SaaS, with four tools and five customer intents.
-The seed data is skewed the way production traces are: the intent with money attached, the
-billing dispute, is almost missing. The mutator configs put it back.
+The seed data is deliberately skewed to simulate gaps in production traces: the
+billing dispute is almost missing, only few cases of rude customers. The mutator configs help to maintain synthetic data distribution.
 
-Everything here is hand-written. No language model wrote any seed or test conversation.
 
 ## Files
 
